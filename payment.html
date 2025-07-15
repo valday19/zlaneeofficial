@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZLANEE STORE - Pembayaran</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #0f1117;
+      color: #fff;
+      padding: 20px;
+    }
+    .card,
+    .form-section {
+      background: #171a23;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    h1,
+    h2 {
+      margin-bottom: 10px;
+    }
+    .product {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    .hidden {
+      display: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>ZLANEE STORE - Pembayaran</h1>
+
+  <div class="card">
+    <h2>Pembayaran</h2>
+    <p>Silakan transfer ke metode pembayaran di bawah ini:</p>
+    <img src="qris.png" alt="QRIS" style="max-width: 200px; display: block; margin: 10px auto;" />
+    <p>DANA: <b>083106960017</b></p>
+    <p>GoPay: <b>088808369439</b></p>
+    <label>Bukti Transfer:</label>
+    <input type="file" id="buktiTransfer" accept="image/*" required />
+    <button onclick="goToForm()">Lanjutkan</button>
+  </div>
+
+  <div class="form-section hidden" id="formDataJasteb">
+    <h2>Form JASTEB VVIP</h2>
+    <form id="formJasteb">
+      <input type="text" name="nama" placeholder="Nama Anda" required />
+      <input type="text" name="wa" placeholder="Nomor WhatsApp" required />
+      <input type="email" name="gmail" placeholder="Gmail (wajib untuk JASTEB)" required />
+      <textarea name="catatan" placeholder="Catatan (opsional)"></textarea>
+      <button type="submit">Kirim Pesanan</button>
+    </form>
+  </div>
+
+  <div class="form-section hidden" id="formDataBiasa">
+    <h2>Form Pembeli</h2>
+    <form id="formBiasa">
+      <input type="text" name="nama" placeholder="Nama Anda" required />
+      <input type="text" name="wa" placeholder="Nomor WhatsApp" required />
+      <textarea name="catatan" placeholder="Catatan (opsional)"></textarea>
+      <button type="submit">Kirim Pesanan</button>
+    </form>
+  </div>
+
+  <footer>
+    <p>👋 Admin: <a href="https://wa.me/6283845201574" target="_blank">Klik di sini</a></p>
+    <p>👀 Testimoni: <a href="https://whatsapp.com/channel/0029VbAsLMT3LdQcTG92qJ1r" target="_blank">Lihat Channel</a></p>
+  </footer>
+
+  <script>
+    const BOT_TOKEN = '7414598655:AAERoWQ277kT5Yy-1kpVblOjRXhOQc_9BAY';
+    const CHAT_ID = '7845232622';
+    let currentProduct = '';
+
+    // Get product from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    currentProduct = urlParams.get('product') || '';
+
+    function goToForm() {
+      const fileInput = document.getElementById("buktiTransfer");
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Silakan upload bukti transfer terlebih dahulu!");
+        return;
+      }
+
+      const isJasteb = currentProduct.toLowerCase().includes("jasteb vvip");
+      document.getElementById("formDataJasteb").classList.toggle("hidden", !isJasteb);
+      document.getElementById("formDataBiasa").classList.toggle("hidden", isJasteb);
+
+      setTimeout(() => {
+        const target = isJasteb ? document.getElementById("formDataJasteb") : document.getElementById("formDataBiasa");
+        target.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    function sendToTelegram(form, isJasteb) {
+      form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const fileInput = document.getElementById("buktiTransfer");
+
+        const pesan = `*Pesanan ZLANEE STORE:*
+Produk: ${currentProduct}
+Nama: ${data.get("nama")}
+WA: ${data.get("wa")}
+${isJasteb ? `Gmail: ${data.get("gmail")}` : ""}
+Catatan: ${data.get("catatan") || "-"}
+`;
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: pesan, parse_mode: "Markdown" })
+        });
+
+        if (fileInput.files.length > 0) {
+          const photoData = new FormData();
+          photoData.append("chat_id", CHAT_ID);
+          photoData.append("document", fileInput.files[0]);
+          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+            method: "POST",
+            body: photoData
+          });
+        }
+
+        alert(isJasteb
+          ? "OTW PROSES MAS/TEBAR❗❗\nCARA CEK RESS JASTEB ⬇\n\n-BUKA APK GMAIL\n-PILIH GARIS 3 DI POJOK KIRI ATAS PILIH -BAGIAN SPAM\n-LALU REFRESH\n-RESS MASUK SATU PERSATU\n-USAHAKAN EMAIL BENAR (SLH NO GNTI)\n-RES MASUK LANGSUNG CEK BIAR FRESH🥶👑\n-RESS BELUM MASUK TUNGGU MUNGKIN WEB DELAY✍️\nRESS MASUK LANGSUNG CEK2 AJA\nDAPET FB/FF/ML/DLL WAJIB SS/STORAN\nDAPET LANSUNG UBAH PW+KELUARIN PERANGKAT BIAR GAK KE HB\nLU STOR GUA BONUSIN👊🤙" : "Pesanan diproses, admin akan menghubungi via WhatsApp.\nPastikan nomor WA aktif/dapat dihubungi."
+          : "✅ Pesanan diproses. Admin akan menghubungi via WhatsApp. Pastikan nomor WhatsApp aktif/dapat dihubungi.");
+
+        form.reset();
+        document.getElementById("formDataJasteb").classList.add("hidden");
+        document.getElementById("formDataBiasa").classList.add("hidden");
+      });
+    }
+
+    window.onload = () => {
+      sendToTelegram(document.getElementById("formJasteb"), true);
+      sendToTelegram(document.getElementById("formBiasa"), false);
+    };
+  </script>
+</body>
+</html>
