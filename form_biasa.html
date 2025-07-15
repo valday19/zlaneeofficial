@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulir Pemesanan - ZLANEE STORE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="form-section">
+    <h2>Form Pemesanan</h2>
+    <form id="formBiasa">
+      <input type="text" name="nama" placeholder="Nama Anda" required />
+      <input type="text" name="wa" placeholder="Nomor WhatsApp" required />
+      <textarea name="catatan" placeholder="Catatan (opsional)"></textarea>
+      <button type="submit">Kirim Pesanan</button>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Set the current product from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentProduct = localStorage.getItem('currentProduct');
+      if (currentProduct) {
+        document.querySelector('h2').textContent = `Formulir untuk ${currentProduct}`;
+      }
+      // Attach the submit listener
+      document.getElementById('formBiasa').addEventListener('submit', (e) => sendToTelegram(e, false));
+    });
+  </script>
+</body>
+</html>
