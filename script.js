@@ -1,4 +1,4 @@
-const BOT_TOKEN = '7414598655:AAEroWQ277kT5Yy-1kpVblOjRXhOQc_9BAY';
+const BOT_TOKEN = '7232626865:AAH9QptlMs1MlR0cmLXQSTChaJtxlSvjhQ4';
 const CHAT_ID = '7845232622';
 
 function startOrder(product) {
