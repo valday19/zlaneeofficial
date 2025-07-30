@@ -1,5 +1,5 @@
-const BOT_TOKEN = '7232626865:AAH9QptlMs1MlR0cmLXQSTChaJtxlSvjhQ4';
-const CHAT_ID = '7845232622';
+const BOT_TOKEN = '7873471810:AAEOADfadG2l18gTNsGSHuMzIo0bKv6HbGg';
+const CHAT_ID = '7681505131';
 
 function startOrder(product) {
   localStorage.setItem('currentProduct', product);
