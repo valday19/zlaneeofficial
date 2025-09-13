@@ -7,7 +7,7 @@ function startOrder(product) {
 }
 
 function goToForm() {
-  const fileInput = document.getElementById("buktiTransfer");
+  const fileInput = document.getElementById("buktiPembayaran");
   if (!fileInput.files || fileInput.files.length === 0) {
     alert("Silakan upload bukti transfer terlebih dahulu!");
     return;
