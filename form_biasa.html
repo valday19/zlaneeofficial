@@ -24,65 +24,27 @@
 
   <script src="script.js"></script>
   <script>
-    // Set the current product from localStorage
-    document.addEventListener('DOMContentLoaded', () => {
-      const currentProduct = localStorage.getItem('currentProduct');
-      if (currentProduct) {
-        document.querySelector('.product-name').textContent = `Formulir untuk ${currentProduct}`;
-      }
-      
-      // Attach the submit listener with file handling
-      document.getElementById('formBiasa').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-        const fileInput = document.getElementById('buktiPembayaran');
-        const file = fileInput.files[0];
-        
-        if (!file) {
-          alert('Silakan upload bukti pembayaran terlebih dahulu!');
-          return;
-        }
-        
-        const formData = new FormData(this);
-        sendToTelegram(formData, file, currentProduct).catch(console.error);
-      });
-    });
+    document.getElementById("formJasteb").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const currentProduct = localStorage.getItem("currentProduct") || "Produk";
 
-    async function sendToTelegram(formData, file, currentProduct) {
-      const BOT_TOKEN = '8458911661:AAFYxPZOePwVmP8QjKkGETd3J-Uitv6izOU'; // Replace with your bot token
-      const CHAT_ID = '7681505131'; // Replace with your chat ID
+  const formData = new FormData(this);
+  const pesan = 
+`🛒 Pesanan Baru
+📦 Produk: ${currentProduct}
+👤 Nama: ${formData.get("nama")}
+📱 WA: ${formData.get("wa")}
+📝 Catatan: ${formData.get("catatan") || "-"}`;
 
-      // Prepare the message
-      const textMessage = `Pesanan: \nProduk: ${currentProduct}\nNama: ${formData.get('nama')}\nWA: ${formData.get('wa')}\nCatatan: ${formData.get('catatan') || '-'}`;
+  // Nomor WhatsApp kamu (ganti dengan nomor admin)
+  const nomorAdmin = "6285924384700";
 
-      try {
-        // Send text message
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: textMessage,
-            parse_mode: "Markdown"
-          })
-        });
+  // Encode biar aman
+  const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
 
-        // Send photo if available
-        const photoData = new FormData();
-        photoData.append("chat_id", CHAT_ID);
-        photoData.append("photo", file);
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-          method: "POST",
-          body: photoData
-        });
-
-        alert('Pesanan diproses. Admin akan menghubungi via WhatsApp. Pastikan nomor WhatsApp anda aktif/dapat dihubungi');
-        localStorage.removeItem('currentProduct');
-        window.location.href = 'https://chat.whatsapp.com/CH3nsiINdKA7L2sAiBr7Wp?mode=ac_t';
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Terjadi kesalahan saat mengirim pesanan. Silakan coba lagi.");
-      }
-    }
+  // Buka WhatsApp
+  window.open(url, "_blank");
+});
   </script>
 </body>
 </html>
