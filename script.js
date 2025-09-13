@@ -28,7 +28,7 @@ async function sendToTelegram(e, isJasteb) {
 
   const formData = new FormData(e.target);
   const currentProduct = localStorage.getItem('currentProduct');
-  const fileInput = document.getElementById("buktiTransfer"); // This will be null if not on payment.html
+  const fileInput = document.getElementById("buktiPembayaran"); // This will be null if not on payment.html
 
   let pesan = `*Pesanan ZLANEE STORE:*
 Produk: ${currentProduct}
