@@ -25,85 +25,28 @@
 
   <script src="script.js"></script>
   <script>
-  // Set the current product from localStorage
-  document.addEventListener('DOMContentLoaded', () => {
-  const currentProduct = localStorage.getItem('currentProduct');
-  if (currentProduct) {
-    document.querySelector('h2').textContent = `Formulir untuk ${currentProduct}`;
-  }
+document.getElementById("formJasteb").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const currentProduct = localStorage.getItem("currentProduct") || "Produk";
 
-  document.getElementById('formJasteb')?.addEventListener('submit', function (e) {
-    e.preventDefault();
+  const formData = new FormData(this);
+  const pesan = 
+`🛒 Pesanan Baru
+📦 Produk: ${currentProduct}
+👤 Nama: ${formData.get("nama")}
+📱 WA: ${formData.get("wa")}
+📧 Gmail: ${formData.get("gmail")}
+📝 Catatan: ${formData.get("catatan") || "-"}`;
 
-    const fileInput = document.getElementById('buktiPembayaran');
-    const file = fileInput?.files[0];
+  // Nomor WhatsApp kamu (ganti dengan nomor admin)
+  const nomorAdmin = "6285924384700";
 
-    if (!file) {
-      alert('Silakan upload bukti pembayaran terlebih dahulu!');
-      return;
-    }
+  // Encode biar aman
+  const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
 
-    const formData = new FormData(this);
-    console.log("DEBUG >> File:", file);
-    console.log("DEBUG >> Current Product:", currentProduct);
-    console.log("DEBUG >> FormData:", [...formData.entries()]);
-
-    sendToTelegram(formData, file, currentProduct);
-  });
+  // Buka WhatsApp
+  window.open(url, "_blank");
 });
-
-async function sendToTelegram(formData, file, currentProduct) {
-  const BOT_TOKEN = '8458911661:AAFyXPOePwVmP8QjKkGEtD3J-Uitv6izOU';
-  const CHAT_ID = '7681505131';
-
-  const textMessage = `Pesanan Jasteb:
-Produk: ${currentProduct}
-Nama: ${formData.get('nama')}
-WA: ${formData.get('wa')}
-Gmail: ${formData.get('gmail')}
-Catatan: ${formData.get('catatan') || '-'} `;
-
-  try {
-    // Kirim pesan teks
-    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: textMessage,
-        parse_mode: "Markdown"
-      })
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error("Telegram sendMessage Error: " + errText);
-    }
-
-    // Kirim foto bukti pembayaran
-    const photoData = new FormData();
-    photoData.append("chat_id", CHAT_ID);
-    photoData.append("photo", file);
-
-    const photoResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-      method: "POST",
-      body: photoData
-    });
-
-    if (!photoResponse.ok) {
-      const errText = await photoResponse.text();
-      throw new Error("Telegram sendPhoto Error: " + errText);
-    }
-
-    alert('✅ Pesanan berhasil dikirim ke Telegram!');
-    localStorage.removeItem('currentProduct');
-    window.location.href = "index.html";
-
-  } catch (error) {
-    console.error("DEBUG >> Error detail:", error);
-    alert("❌ Error kirim ke Telegram: " + error.message);
-  }
-}
 </script>
 </body>
 </html>
