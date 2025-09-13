@@ -1,6 +1,3 @@
-const BOT_TOKEN = '8458911661:AAFYxPZOePwVmP8QjKkGETd3J-Uitv6izOU';
-const CHAT_ID = '7681505131';
-
 function startOrder(product) {
   localStorage.setItem('currentProduct', product);
   window.location.href = 'payment.html';
