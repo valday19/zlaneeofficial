@@ -3,17 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulir Jasteb - ZLANEE STORE</title>
+  <title>Formulir Pembelian - ZLANEE STORE</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="form-section">
     <a href="index.html" class="back-button">← Kembali ke Produk</a>
-    <h2>Formulir Jasteb <span class="product-name"></span></h2>
-    <form id="formJasteb">
+    <h2>Isi Data Pembelian <span class="product-name"></span></h2>
+    <form id="formBiasa">
       <input type="text" name="nama" placeholder="Nama Anda" required />
       <input type="text" name="wa" placeholder="Nomor WhatsApp" required />
       <input type="email" name="gmail" placeholder="Gmail (wajib untuk JASTEB)" required />
+      
+      <!-- Tambahan detail pembayaran -->
+      <select name="metode" required>
+        <option value="">Pilih Metode Pembayaran</option>
+        <option value="DANA">DANA</option>
+        <option value="GoPay">GoPay</option>
+        <option value="QRIS">QRIS</option>
+      </select>
+      <input type="number" name="jumlah" placeholder="Jumlah Transfer (Rp)" required />
+
       <textarea name="catatan" placeholder="Catatan (opsional)"></textarea>
       <div class="file-upload">
         <label for="buktiPembayaran">Upload Bukti Pembayaran:</label>
@@ -23,30 +33,33 @@
     </form>
   </div>
 
-  <script src="script.js"></script>
   <script>
-document.getElementById("formJasteb").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const currentProduct = localStorage.getItem("currentProduct") || "Produk";
+    document.getElementById("formBiasa").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const currentProduct = localStorage.getItem("currentProduct") || "Produk";
 
-  const formData = new FormData(this);
-  const pesan = 
-`🛒 Pesanan Baru
+      const formData = new FormData(this);
+      const pesan =
+`🛒 *Pesanan Baru*
 📦 Produk: ${currentProduct}
 👤 Nama: ${formData.get("nama")}
 📱 WA: ${formData.get("wa")}
 📧 Gmail: ${formData.get("gmail")}
-📝 Catatan: ${formData.get("catatan") || "-"}`;
+💳 Metode Pembayaran: ${formData.get("metode")}
+💰 Jumlah Transfer: Rp${formData.get("jumlah")}
+📝 Catatan: ${formData.get("catatan") || "-"}
 
-  // Nomor WhatsApp kamu (ganti dengan nomor admin)
-  const nomorAdmin = "6285924384700";
+⚠️ *Jangan lupa kirim bukti pembayaran berupa foto di chat ini!*`;
 
-  // Encode biar aman
-  const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
+      // Nomor WhatsApp admin
+      const nomorAdmin = "6285924384700";
 
-  // Buka WhatsApp
-  window.open(url, "_blank");
-});
-</script>
+      // Encode biar aman
+      const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
+
+      // Buka WhatsApp
+      window.open(url, "_blank");
+    });
+  </script>
 </body>
 </html>
