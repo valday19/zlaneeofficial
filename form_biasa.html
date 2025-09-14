@@ -13,6 +13,16 @@
     <form id="formBiasa">
       <input type="text" name="nama" placeholder="Nama Anda" required />
       <input type="text" name="wa" placeholder="Nomor WhatsApp" required />
+      
+      <!-- Tambahan detail pembayaran -->
+      <select name="metode" required>
+        <option value="">Pilih Metode Pembayaran</option>
+        <option value="DANA">DANA</option>
+        <option value="GoPay">GoPay</option>
+        <option value="QRIS">QRIS</option>
+      </select>
+      <input type="number" name="jumlah" placeholder="Jumlah Transfer (Rp)" required />
+
       <textarea name="catatan" placeholder="Catatan (opsional)"></textarea>
       <div class="file-upload">
         <label for="buktiPembayaran">Upload Bukti Pembayaran:</label>
@@ -22,29 +32,32 @@
     </form>
   </div>
 
-  <script src="script.js"></script>
   <script>
     document.getElementById("formBiasa").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const currentProduct = localStorage.getItem("currentProduct") || "Produk";
+      e.preventDefault();
+      const currentProduct = localStorage.getItem("currentProduct") || "Produk";
 
-  const formData = new FormData(this);
-  const pesan = 
-`🛒 Pesanan Baru
+      const formData = new FormData(this);
+      const pesan =
+`🛒 *Pesanan Baru*
 📦 Produk: ${currentProduct}
 👤 Nama: ${formData.get("nama")}
 📱 WA: ${formData.get("wa")}
-📝 Catatan: ${formData.get("catatan") || "-"}`;
+💳 Metode Pembayaran: ${formData.get("metode")}
+💰 Jumlah Transfer: Rp${formData.get("jumlah")}
+📝 Catatan: ${formData.get("catatan") || "-"}
 
-  // Nomor WhatsApp kamu (ganti dengan nomor admin)
-  const nomorAdmin = "6285924384700";
+⚠️ *Jangan lupa kirim bukti pembayaran berupa foto di chat ini!*`;
 
-  // Encode biar aman
-  const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
+      // Nomor WhatsApp admin
+      const nomorAdmin = "6285924384700";
 
-  // Buka WhatsApp
-  window.open(url, "_blank");
-});
+      // Encode biar aman
+      const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
+
+      // Buka WhatsApp
+      window.open(url, "_blank");
+    });
   </script>
 </body>
 </html>
